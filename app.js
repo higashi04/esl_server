@@ -44,5 +44,5 @@ mongoose.connection.on("error", (err) => {
 const port = process.env.PORT || 8080;
 
 app.listen(port, () => [
-    console.log("app running")
+    console.log(`app running in port ${port}`)
 ])

@@ -10,6 +10,7 @@ const generateToken = (id) => {
 };
 
 const registerUser = async (req, res) => {
+  console.log(req.body)
   const {
     username,
     password,
@@ -17,7 +18,6 @@ const registerUser = async (req, res) => {
     email,
     firstName,
     lastName,
-    dateOfBirth,
   } = req.body;
   if (
     (!username,
@@ -25,8 +25,7 @@ const registerUser = async (req, res) => {
     !profileType,
     !email,
     !firstName,
-    !lastName,
-    !dateOfBirth)
+    !lastName)
   ) {
     res.status(400);
     throw new Error("Favor de proporcionar todos los datos requeridos.");
@@ -51,7 +50,7 @@ const registerUser = async (req, res) => {
     password: hashedPassword,
     firstName,
     lastName,
-    dateOfBirth,
+    profileType,
     active: false,
   });
   if (user) {
@@ -62,7 +61,6 @@ const registerUser = async (req, res) => {
       firstName: user.firstName,
       lastName: user.lastName,
       profileType: user.profileType,
-      dateOfBirth: user.dateOfBirth,
       active: user.active,
       token: generateToken(user._id),
     });
@@ -83,7 +81,6 @@ const loginUser = async (req, res) => {
       firstName: user.firstName,
       lastName: user.lastName,
       profileType: user.profileType,
-      dateOfBirth: user.dateOfBirth,
       active: user.active,
       token: generateToken(user._id),
     });

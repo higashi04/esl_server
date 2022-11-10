@@ -9,12 +9,8 @@ const UserSchema = new Schema({
         required: true,
         unique: true
     },
-    profileType: {
-        type: String,
-        required: true,
-        enmum: ["Alumno", "Maestro"],
-        required: true
-    },
+    password: String,
+    profileType: String,
     email: {
         type: String,
         required: true,
@@ -25,9 +21,6 @@ const UserSchema = new Schema({
     },
     lastName: {
         type: String,
-    },
-    dateOfBirth: {
-        type: Date
     },
     active: Boolean
 })

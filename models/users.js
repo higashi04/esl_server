@@ -22,7 +22,19 @@ const UserSchema = new Schema({
     lastName: {
         type: String,
     },
-    active: Boolean
+    active: Boolean,
+    lessons: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Lessons"
+        }
+    ],
+    teacher: {
+        id: String
+    },
+    students: [{
+        id: String
+    }]
 })
 
 module.exports = mongoose.model('User', UserSchema);

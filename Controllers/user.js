@@ -10,7 +10,6 @@ const generateToken = (id) => {
 };
 
 const registerUser = async (req, res) => {
-  console.log(req.body)
   const {
     username,
     password,
@@ -18,6 +17,7 @@ const registerUser = async (req, res) => {
     email,
     firstName,
     lastName,
+    activeUser
   } = req.body;
   if (
     (!username,
@@ -44,29 +44,60 @@ const registerUser = async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
-  const user = await User.create({
-    username,
-    email,
-    password: hashedPassword,
-    firstName,
-    lastName,
-    profileType,
-    active: false,
-  });
-  if (user) {
-    res.status(201).json({
-      _id: user.id,
-      username: user.username,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      profileType: user.profileType,
-      active: user.active,
-      token: generateToken(user._id),
+  if(activeUser.profileType === "Teacher") {
+    const user = await User.create({
+      username,
+      email,
+      password: hashedPassword,
+      firstName,
+      lastName,
+      profileType,
+      active: false,
+      teacher: activeUser._id
     });
+    if (user) {
+      const findTeacher = await User.findById(activeUser._id);
+      findTeacher.students.push(user.id);
+      await findTeacher.save()
+      res.status(201).json({
+        _id: user.id,
+        username: user.username,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        profileType: user.profileType,
+        active: user.active,
+        token: generateToken(user._id),
+      });
+    } else {
+      res.status(400);
+      throw new Error("Datos no validos.");
+    }
   } else {
-    res.status(400);
-    throw new Error("Datos no validos.");
+    const user = await User.create({
+      username,
+      email,
+      password: hashedPassword,
+      firstName,
+      lastName,
+      profileType,
+      active: false,
+    });
+    if (user) {
+      res.status(201).json({
+        _id: user.id,
+        username: user.username,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        profileType: user.profileType,
+        active: user.active,
+        token: generateToken(user._id),
+      });
+    } else {
+      res.status(400);
+      throw new Error("Datos no validos.");
+    }
   }
 };
 
